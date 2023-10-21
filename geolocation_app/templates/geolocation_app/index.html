@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Geolocation Example</title>
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+</head>
+<body onload="getLocation()">
+    <iframe src="https://giphy.com/embed/6BZaFXBVPBtok" width="480" height="349" frameBorder="0" class="giphy-embed" allowFullScreen></iframe>
+    <!--<h1>Geolocation Example</h1>
+    <p id="location">Click the button to get your location.</p>
+    <button onclick="getLocation()">Get Location</button>
+    -->
+    <iframe src="https://giphy.com/embed/oQvpRPoB6BCyk" width="480" height="351" frameBorder="0" class="giphy-embed" allowFullScreen></iframe>
+    <iframe src="https://giphy.com/embed/GxlGnzAstD51m" width="480" height="360" frameBorder="0" class="giphy-embed" allowFullScreen></iframe>
+    <iframe src="https://giphy.com/embed/4F3faaVhmt7OM" width="480" height="360" frameBorder="0" class="giphy-embed" allowFullScreen></iframe>
+
+
+    <script>
+    function getCookie(name) {
+        let cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+            const cookies = document.cookie.split(';');
+            for (let i = 0; i < cookies.length; i++) {
+                const cookie = cookies[i].trim();
+                // Check if the cookie name matches the pattern "csrftoken=..."
+                if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
+
+        function getLocation() {
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(showPosition);
+            } else {
+                document.getElementById("location").innerHTML = "Geolocation is not supported by this browser.";
+            }
+        }
+
+
+        function showPosition(position) {
+        var latitude = position.coords.latitude;
+        var longitude = position.coords.longitude;
+        var accuracy = position.coords.accuracy;
+
+        // Get the CSRF token from the cookie
+        const csrfToken = getCookie('csrftoken');
+
+        // You can send the latitude, longitude, and accuracy to the server using AJAX.
+        // For simplicity, this example uses jQuery for AJAX.
+        $.ajax({
+            type: 'POST',
+            url: '/save_coordinates/',
+            contentType: 'application/json',
+            headers: {'X-CSRFToken': csrfToken},  // Include the CSRF token in the headers
+            data: JSON.stringify({ latitude: latitude, longitude: longitude, accuracy: accuracy }),
+            success: function (response) {
+                console.log(response);
+            },
+            error: function (error) {
+                console.error(error);
+            }
+        });
+
+        document.getElementById("location").innerHTML = "Latitude: " + latitude + "<br>Longitude: " + longitude + "<br>Accuracy: " + accuracy + " meters.";
+    }
+</script>
+
+
+</body>
+</html>
